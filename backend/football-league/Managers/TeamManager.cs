@@ -1,8 +1,8 @@
 using football_league.Data.Repositories.Abstractions;
 using football_league.Data.ViewModels;
 using football_league.Managers.Abstractions;
-using football_league.Models;
-using football_league.Models.DTOs;
+using football_league.Data.Models;
+using football_league.Data.Models.DTOs;
 using football_league.Services.Ranking;
 
 namespace football_league.Managers;
@@ -15,6 +15,11 @@ public class TeamManager(ITeamRepository teamRepository, IRankingCalculator rank
     public async Task<PaginatedResponse<Team, TeamPaginationMetadata>> GetAllTeamsAsync(TeamQuery queryParams)
     {
         return await _teamRepository.GetAllTeamsPaginated(queryParams);
+    }
+
+    public async Task<IEnumerable<Team>> GetAll()
+    {
+        return await _teamRepository.GetAllTeamsAsync();
     }
 
     public async Task<Team> GetTeamByIdAsync(int id)

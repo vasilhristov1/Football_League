@@ -1,8 +1,8 @@
 using AutoMapper;
 using football_league.Data.ViewModels;
 using football_league.Managers.Abstractions;
-using football_league.Models;
-using football_league.Models.DTOs;
+using football_league.Data.Models;
+using football_league.Data.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,10 +18,16 @@ public class TeamController(ITeamManager teamManager, IMapper mapper) : Controll
     private readonly ITeamManager _teamManager = teamManager;
     private readonly IMapper _mapper = mapper;
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] TeamQuery queryParams)
+    [HttpGet("paginated")]
+    public async Task<IActionResult> GetAllPaginated([FromQuery] TeamQuery queryParams)
     {
         return Ok(_mapper.Map<TeamsResponse>(await _teamManager.GetAllTeamsAsync(queryParams)));
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        return Ok(_mapper.Map<TeamResultModel>(await _teamManager.GetAll()));
     }
 
     [HttpGet("{id}")]

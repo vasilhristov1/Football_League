@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace football_league.Models.Enums;
+namespace football_league.Data.Models.Enums;
 
 public enum Role
 {

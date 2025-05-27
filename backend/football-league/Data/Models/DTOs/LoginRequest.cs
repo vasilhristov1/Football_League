@@ -1,4 +1,4 @@
-namespace football_league.Models.DTOs;
+namespace football_league.Data.Models.DTOs;
 
 public record LoginRequest
 {

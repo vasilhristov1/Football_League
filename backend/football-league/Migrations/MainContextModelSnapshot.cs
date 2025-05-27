@@ -23,7 +23,7 @@ namespace football_league.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("football_league.Models.Match", b =>
+            modelBuilder.Entity("football_league.Data.Models.Match", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -60,7 +60,7 @@ namespace football_league.Migrations
                     b.ToTable("Matches", "FootballLeagueApp");
                 });
 
-            modelBuilder.Entity("football_league.Models.Team", b =>
+            modelBuilder.Entity("football_league.Data.Models.Team", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -73,13 +73,10 @@ namespace football_league.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<string>("LogoUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Points")
                         .HasColumnType("int");
@@ -89,7 +86,7 @@ namespace football_league.Migrations
                     b.ToTable("Teams", "FootballLeagueApp");
                 });
 
-            modelBuilder.Entity("football_league.Models.User", b =>
+            modelBuilder.Entity("football_league.Data.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -104,7 +101,8 @@ namespace football_league.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Role")
                         .IsRequired()
@@ -112,7 +110,8 @@ namespace football_league.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -129,15 +128,15 @@ namespace football_league.Migrations
                         });
                 });
 
-            modelBuilder.Entity("football_league.Models.Match", b =>
+            modelBuilder.Entity("football_league.Data.Models.Match", b =>
                 {
-                    b.HasOne("football_league.Models.Team", "AwayTeam")
+                    b.HasOne("football_league.Data.Models.Team", "AwayTeam")
                         .WithMany()
                         .HasForeignKey("AwayTeamId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("football_league.Models.Team", "HomeTeam")
+                    b.HasOne("football_league.Data.Models.Team", "HomeTeam")
                         .WithMany()
                         .HasForeignKey("HomeTeamId")
                         .OnDelete(DeleteBehavior.Restrict)

@@ -1,7 +1,7 @@
 using football_league.Data.Repositories.Abstractions;
 using football_league.Data.ViewModels;
-using football_league.Models;
-using football_league.Models.DTOs;
+using football_league.Data.Models;
+using football_league.Data.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 
 namespace football_league.Data.Repositories;
@@ -22,10 +22,14 @@ public class TeamRepository(MainContext context) : ITeamRepository
     {
         var team = await _context.Teams.FindAsync(id);
         
-        if (team == null) 
-            return false;
+        if (team == null)
+            throw new KeyNotFoundException($"Team with ID {id} was not found.");
         
+        var teamMatches = _context.Matches.Where(x => x.HomeTeamId == id || x.AwayTeamId == id);
+        
+        _context.Matches.RemoveRange(teamMatches);
         _context.Teams.Remove(team);
+        
         await _context.SaveChangesAsync();
         
         return true;
@@ -69,13 +73,20 @@ public class TeamRepository(MainContext context) : ITeamRepository
 
     public async Task<Team> GetTeamByIdAsync(int id)
     {
-        return await _context.Teams.FindAsync(id);
+        var team = await _context.Teams.FindAsync(id);
+
+        if (team == null)
+            throw new KeyNotFoundException($"Team with ID {id} was not found.");
+
+        return team;
     }
 
     public async Task<Team> UpdateTeamAsync(int id, Team updatedTeam)
     {
         var team = await _context.Teams.FindAsync(id);
-        if (team == null) return null;
+        
+        if (team == null)
+            throw new KeyNotFoundException($"Team with ID {id} was not found.");
 
         team.Name = updatedTeam.Name;
         await _context.SaveChangesAsync();

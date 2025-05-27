@@ -1,5 +1,5 @@
 using football_league.Data.ViewModels;
-using football_league.Models;
+using football_league.Data.Models;
 
 namespace football_league.Data;
 

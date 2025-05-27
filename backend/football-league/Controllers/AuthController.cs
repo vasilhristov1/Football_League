@@ -3,8 +3,8 @@ using System.Security.Claims;
 using System.Text;
 using AutoMapper;
 using football_league.Managers.Abstractions;
-using football_league.Models;
-using football_league.Models.DTOs;
+using football_league.Data.Models;
+using football_league.Data.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 

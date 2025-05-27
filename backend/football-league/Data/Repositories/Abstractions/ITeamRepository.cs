@@ -1,6 +1,6 @@
 using football_league.Data.ViewModels;
-using football_league.Models;
-using football_league.Models.DTOs;
+using football_league.Data.Models;
+using football_league.Data.Models.DTOs;
 
 namespace football_league.Data.Repositories.Abstractions;
 

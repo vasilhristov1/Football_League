@@ -1,5 +1,5 @@
-using football_league.Models;
-using football_league.Models.Enums;
+using football_league.Data.Models;
+using football_league.Data.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace football_league.Data;

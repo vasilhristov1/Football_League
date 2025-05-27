@@ -1,5 +1,5 @@
 using football_league.Data.Repositories.Abstractions;
-using football_league.Models;
+using football_league.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace football_league.Data.Repositories;

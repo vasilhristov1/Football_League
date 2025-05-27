@@ -1,7 +1,7 @@
 using football_league.Data.Repositories.Abstractions;
 using football_league.Data.ViewModels;
 using football_league.Managers.Abstractions;
-using football_league.Models;
+using football_league.Data.Models;
 
 namespace football_league.Managers;
 
