@@ -1,8 +1,8 @@
 using AutoMapper;
 using football_league.Data.ViewModels;
 using football_league.Managers.Abstractions;
-using football_league.Models;
-using football_league.Models.DTOs;
+using football_league.Data.Models;
+using football_league.Data.Models.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,7 +28,7 @@ public class MatchController(IMatchManager matchManager, IMapper mapper) : Contr
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateMatch([FromBody] CreateMatchModel model)
     {
-        if (model.HomeTeamName == model.AwayTeamName)
+        if (model.HomeTeamId == model.AwayTeamId)
             return BadRequest("A team cannot play against itself.");
 
         return Ok(_mapper.Map<MatchResultModel>(await _matchManager.CreateMatchAsync(_mapper.Map<Match>(model))));

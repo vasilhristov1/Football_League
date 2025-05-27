@@ -1,4 +1,4 @@
-namespace football_league.Models;
+namespace football_league.Data.Models;
 
 public abstract class ModelBase
 {

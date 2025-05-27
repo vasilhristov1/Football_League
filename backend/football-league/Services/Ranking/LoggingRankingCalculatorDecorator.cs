@@ -1,4 +1,4 @@
-using football_league.Models.DTOs;
+using football_league.Data.Models.DTOs;
 
 namespace football_league.Services.Ranking;
 
