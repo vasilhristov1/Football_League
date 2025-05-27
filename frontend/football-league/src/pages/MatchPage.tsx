@@ -87,16 +87,14 @@ const MatchPage = () => {
         </TableBody>
       </Table>
 
-      {totalPages > 1 && (
-        <Box mt={3} display="flex" justifyContent="center">
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={handlePageChange}
-            color="primary"
-          />
-        </Box>
-      )}
+      <Box mt={3} display="flex" justifyContent="center">
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={handlePageChange}
+          color="primary"
+        />
+      </Box>
     </Container>
   );
 };

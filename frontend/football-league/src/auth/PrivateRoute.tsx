@@ -5,6 +5,9 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "./useAuth";
 
 export const PrivateRoute = ({ children }: { children: ReactNode }) => {
-  const { token } = useAuth();
+  const { token, isLoading } = useAuth();
+  
+  if (isLoading) return null
+  
   return token ? children : <Navigate to="/login" />
 }
