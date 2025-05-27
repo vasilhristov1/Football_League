@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { apiCalls } from '../shared/apiCalls';
@@ -20,6 +20,10 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import TextField from '@mui/material/TextField'
+import InputAdornment from '@mui/material/InputAdornment';
+import SearchIcon from '@mui/icons-material/Search';
+import StarIcon from '@mui/icons-material/Star';
+import Tooltip from '@mui/material/Tooltip';
 
 // ICONS
 import EditIcon from '@mui/icons-material/Edit';
@@ -33,6 +37,8 @@ const TeamPage = () => {
   const [teams, setTeams] = useState<TeamResponse[]>([]);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -42,22 +48,25 @@ const TeamPage = () => {
 
   const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
-  const fetchTeams = async (currentPage: number) => {
+  const fetchTeams = useCallback(async (currentPage: number) => {
     try {
       const data = await apiCalls.getTeamsPaginated({
         page: currentPage,
         pageSize: PAGE_SIZE,
+        searchTerm,
+        sortBy: 'points',
+        sortDirection,
       });
       setTeams(data.items);
       setTotalCount(data.metadata.totalCount);
     } catch (err) {
       console.error('Failed to fetch teams', err);
     }
-  };
+  }, [searchTerm, sortDirection]);
 
   useEffect(() => {
     fetchTeams(page);
-  }, [page]);
+  }, [page, fetchTeams]);
 
   const handlePageChange = (_: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
@@ -99,6 +108,38 @@ const TeamPage = () => {
             Add Team
           </Button>
         )}
+      </Box>
+
+      <Box display="flex" justifyContent="space-between" alignItems="center" mt={4} mb={2} flexWrap="wrap" gap={2}>
+        <TextField
+          placeholder="Search by name"
+          size="small"
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value);
+            setPage(1);
+          }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              )
+            }
+          }}
+        />
+
+        <Tooltip title={`Sort by points (${sortDirection})`}>
+          <IconButton
+            onClick={() => {
+              setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'));
+              setPage(1);
+            }}
+          >
+            <StarIcon />
+          </IconButton>
+        </Tooltip>
       </Box>
 
       <Table>
