@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "Yu57%72j@ndVd"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql-data:/var/opt/mssql
+    networks:
+      - backend-network
+
+  backend:
+    build:
+      context: ./football-league
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MainConnectionString=Server=db;Database=FootballLeague;User Id=sa;Password=Yu57%72j@ndVd;TrustServerCertificate=True;
+    depends_on:
+      - db
+    networks:
+      - backend-network
+
+volumes:
+  sql-data:
+
+networks:
+  backend-network:

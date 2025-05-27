@@ -37,8 +37,7 @@ public class Program
             });
 
         builder.Services.AddEndpointsApiExplorer();
-
-        builder.Services.AddSwagger();
+        builder.Services.AddSwaggerGen();
 
         builder.Services.AddCors(options =>
         {
@@ -47,10 +46,7 @@ public class Program
                 policy =>
                 {
                     policy
-                        .SetIsOriginAllowedToAllowWildcardSubdomains()
-                        .SetIsOriginAllowed(origin =>
-                            new Uri(origin).Host is "localhost"
-                        )
+                        .AllowAnyOrigin()
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .WithExposedHeaders("Content-Disposition");
@@ -61,45 +57,50 @@ public class Program
         builder.Services.AddRequestTimeouts(options =>
         {
             options.DefaultPolicy = new RequestTimeoutPolicy { Timeout = TimeSpan.FromMinutes(5) };
-            options.AddPolicy("FootballLeaguePolicy", TimeSpan.FromMinutes(5));
         });
 
         builder.Services.AddRepositories();
         builder.Services.AddManagers();
         builder.Services.AddServices();
         builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-        
+
         var jwtSettings = builder.Configuration.GetSection("JwtSettings");
         builder.Services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.TokenValidationParameters = new TokenValidationParameters
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtSettings["Issuer"],
-                    ValidAudience = jwtSettings["Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
-                };
-            });
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtSettings["Issuer"],
+                ValidAudience = jwtSettings["Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
+            };
+        });
 
         var app = builder.Build();
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<MainContext>();
+            db.Database.Migrate();
+        }
 
         app.UseSwagger();
         app.UseSwaggerUI();
 
         app.UseCors(FootballLeagueCorsPolicy);
-        
         app.UseAuthentication();
         app.UseAuthorization();
 
         app.UseMiddleware<ExceptionHandlingMiddleware>();
+
         app.MapControllers();
 
         app.Run();
